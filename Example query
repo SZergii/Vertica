@@ -1,0 +1,21 @@
+------------------------------------------------------------GET "UNIX Time" in different databases
+
+Vertica:
+SELECT now() "Now", EXTRACT(EPOCH FROM now()) "UNIX Time";
+
+MySQL:
+SELECT now() "Now", UNIX_TIMESTAMP(now()) "UNIX Time";
+
+SQL Server:
+SELECT GETDATE() "Now", DATEDIFF(s, '1970-01-01 00:00:00', GETUTCDATE()) "UNIX Time";
+
+Oracle:
+SELECT sysdate "Now", (sysdate - to_date( '01/01/1970', 'MM/DD/YYYY' )) * 24 * 60 * 60 "UNIX Time" 2 FROM dual;
+
+
+
+------------------------------------------------------------CONVERT "UNIX Time" to timestamp
+SELECT TO_TIMESTAMP(1603206468);
+
+
+
