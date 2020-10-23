@@ -18,4 +18,20 @@ SELECT sysdate "Now", (sysdate - to_date( '01/01/1970', 'MM/DD/YYYY' )) * 24 * 6
 SELECT TO_TIMESTAMP(1603206468);
 
 
+------------------------------------------------------------DATE_TRUNC ('year'/'quarter'/'month'/'day'/'hour'/'minute'/'second'= 'xxxx+s')
+SELECT DATE_TRUNC('day', date_created), COUNT(id)
+FROM schema.table
+WHERE date_created BETWEEN '2019-09-01 00:00:00' AND '2019-09-25 00:00:00'
+GROUP BY DATE_TRUNC('day', date_created)
+ORDER BY DATE_TRUNC('day', date_created) DESC
+;
+
+SELECT DATE_TRUNC('month', date_created), COUNT(id)
+FROM schema.table
+WHERE date_created BETWEEN NOW() - INTERVAL '40 days' AND NOW()
+GROUP BY 1
+ORDER BY 1 DESC
+;
+
+
 
