@@ -14,11 +14,15 @@ SELECT sysdate "Now", (sysdate - to_date( '01/01/1970', 'MM/DD/YYYY' )) * 24 * 6
 
 
 
-------------------------------------------------------------CONVERT "UNIX Time" to timestamp
+------------------------------------------------------------CONVERT "UNIX Time" to timestamp and the other way around
+
+SELECT CAST('2020-08-01 12:24:07' AS date) AS "Date", EXTRACT(EPOCH FROM CAST('2020-08-01 12:24:07' AS date)) "UNIX Date";
+SELECT CAST('2020-08-01 12:24:07' AS timestamp) AS "Date", EXTRACT(EPOCH FROM CAST('2020-08-01 12:24:07' AS timestamp)) "UNIX Date";
 SELECT TO_TIMESTAMP(1603206468);
 
 
 ------------------------------------------------------------DATE_TRUNC ('year'/'quarter'/'month'/'day'/'hour'/'minute'/'second'= 'xxxx+s')
+
 SELECT DATE_TRUNC('day', date_created), COUNT(id)
 FROM schema.table
 WHERE date_created BETWEEN '2019-09-01 00:00:00' AND '2019-09-25 00:00:00'
