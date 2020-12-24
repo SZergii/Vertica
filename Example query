@@ -39,5 +39,13 @@ GROUP BY 1
 ORDER BY 1 DESC
 ;
 
+------------------------------------------------------------Check tabels size in VERTICA
 
+SELECT anchor_table_schema,
+		anchor_table_name,
+		SUM(used_bytes)/(1024^2) AS TABLE_SIZE_MB
+FROM v_monitor.column_storage
+GROUP BY anchor_table_schema, anchor_table_name
+ORDER BY SUM(used_bytes) DESC
+;
 
