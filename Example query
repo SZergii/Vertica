@@ -39,6 +39,22 @@ GROUP BY 1
 ORDER BY 1 DESC
 ;
 
+----parse date to custome period (24h to 4h periods, hour to 30 minetes period)
+
+SELECT MIN(date_created) AS time, COUNT(id) AS total
+FROM schema.table
+WHERE date_created BETWEEN '2021-01-27 00:00:00' AND '2021-01-28 23:59:59'
+GROUP BY DATE(date_created), FLOOR(HOUR(date_created)/4)
+ORDER BY MIN(date_created)
+;
+
+SELECT MIN(date_created) AS time, COUNT(id) AS total
+FROM schema.table
+WHERE date_created BETWEEN '2021-01-27 00:00:00' AND '2021-01-28 23:59:59'
+GROUP BY HOUR(date_created), FLOOR(MINUTE (date_created)/30)
+ORDER BY MIN(date_created)
+;
+
 ------------------------------------------------------------Check tabels size in VERTICA
 
 SELECT anchor_table_schema,
