@@ -66,6 +66,7 @@ ORDER BY SUM(used_bytes) DESC
 ;
 
 --------------------------------------------------------How to select domain name from email address
+
 SELECT email, split_part(email, '@', 2) AS domain
 FROM user_email
 ;
@@ -74,7 +75,22 @@ SELECT RIGHT(email, LENGTH(email)-INSTR(email, '@'))
 FROM user_email
 ;
 
+------------------------------------------------------TEMPORARY TABLE in VERTICA
 
+SELECT DISTINCT table_name, table_type FROM all_tables
+WHERE table_type LIKE 'LOCAL%'
+;
 
+CREATE LOCAL TEMPORARY TABLE checker (card_bin int, card_last4 int, transaction_date date,amount float) ON COMMIT PRESERVE ROWS
+;
+
+CREATE LOCAL TEMPORARY TABLE DOMAINS_FLAG (domain_name VARCHAR, pub_ats_id INT) on commit preserve rows
+;
+
+INSERT INTO DOMAINS_FLAG (domain_name, pub_ats_id)
+VALUES ('vs.com', 123555)
+;
+
+DROP TABLE checker;
 
 
