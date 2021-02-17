@@ -65,3 +65,16 @@ GROUP BY anchor_table_schema, anchor_table_name
 ORDER BY SUM(used_bytes) DESC
 ;
 
+--------------------------------------------------------How to select domain name from email address
+SELECT email, split_part(email, '@', 2) AS domain
+FROM user_email
+;
+
+SELECT RIGHT(email, LENGTH(email)-INSTR(email, '@'))
+FROM user_email
+;
+
+
+
+
+
