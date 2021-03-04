@@ -93,4 +93,17 @@ VALUES ('vs.com', 123555)
 
 DROP TABLE checker;
 
+------------------------------------------------------Insert a value that contains an apostrophe (single quote)
 
+INSERT INTO Person (First, Last)
+VALUES ('Joe', 'O''Brien')
+;
+
+INSERT INTO Person (First, Last)
+VALUES ('Joe', E'O\'Brien')
+;
+
+SELECT First, Last FROM Person WHERE Last = 'O''Brien'
+;
+
+https://stackoverflow.com/questions/1912095/how-to-insert-a-value-that-contains-an-apostrophe-single-quote
