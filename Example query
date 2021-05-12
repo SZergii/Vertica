@@ -107,3 +107,42 @@ SELECT First, Last FROM Person WHERE Last = 'O''Brien'
 ;
 
 https://stackoverflow.com/questions/1912095/how-to-insert-a-value-that-contains-an-apostrophe-single-quote
+
+
+
+--------------------------------------------------------------Regular Expression Functions--------------------------------------------
+
+--Select all of the rows in the table that start with digit
+SELECT screen_resolution
+FROM landing
+WHERE REGEXP_LIKE(screen_resolution, '^[0-9]')
+;
+
+--Select all of the rows in the table that contain a digit.
+SELECT screen_resolution
+FROM landing
+WHERE REGEXP_LIKE(screen_resolution, '\d')
+;
+
+--Select all rows that contain the substring 'AB' using case sensitive matching.
+SELECT user_name 
+FROM user
+WHERE REGEXP_LIKE(user_name, 'AB')
+;
+
+--Select all rows that contain the substring 'AB' using case insensitive matching.
+SELECT user_name 
+FROM user
+WHERE REGEXP_LIKE(user_name, 'AB','i')
+;
+
+--Select rows that contain the substring 'A B' ignoring space within the regular expression.
+SELECT user_name 
+FROM user
+WHERE REGEXP_LIKE(user_name, 'A B', 'x')
+
+--Select rows that start with the substring 'ap' and end with the substring 'les'.
+SELECT user_name 
+FROM user
+WHERE REGEXP_LIKE(user_name, '^ap.*les$')
+;
