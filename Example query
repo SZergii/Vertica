@@ -153,3 +153,17 @@ WHERE REGEXP_LIKE(user_name, '^ap.*les$')
 UPDATE schema.transactions
 SET card_last4 = CONCAT('000', card_last4)
 WHERE LENGTH(card_last4)=1;
+
+
+
+----------------Remove certain characters from a string
+UPDATE xpxp.truevo_transactions
+SET channel_name = REPLACE(channel_name, ' 3DS', '')
+WHERE channel_name LIKE '%3DS%';
+
+SELECT REPLACE(channel_name, ' 3DS', '')
+FROM schema.transactions
+WHERE channel_name LIKE '% 3DS%';
+
+
+
