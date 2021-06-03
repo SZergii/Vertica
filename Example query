@@ -165,5 +165,30 @@ SELECT REPLACE(channel_name, ' 3DS', '')
 FROM schema.transactions
 WHERE channel_name LIKE '% 3DS%';
 
+-------------------------- Creat table and insert more than 1 row with one query
+DROP TABLE schema.table;
+
+CREATE TABLE schema.table
+(
+	id int PRIMARY KEY NOT NULL,
+	date_of_spending date NOT NULL,
+	amount float,
+	created_agent_name varchar(100) DEFAULT CURRENT_USER(),
+	created_at timestamp NOT NULL DEFAULT NOW(),
+	updated_at timestamp NOT NULL DEFAULT NOW()
+);
+
+INSERT INTO xpxp.keto_marketing
+	SELECT 11,date(07-01-2014),560 UNION
+	SELECT 12,date(08-01-2014),4708 UNION
+	SELECT 13,date(09-01-2014),5960 UNION
+	SELECT 14,date(10-01-2014),100 UNION
+	SELECT 15,date(11-01-2014),20 UNION
+	SELECT 16,date(12-01-2014),3180 UNION 
+	SELECT 17,date(01-01-2015),480.00 UNION
+	SELECT 18,date(02-01-2015),7320.00 UNION
+	SELECT 19,date(03-01-2015),9030.00 UNION
+	SELECT 20,date(04-01-2015),4610.00
+;
 
 
