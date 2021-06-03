@@ -157,7 +157,7 @@ WHERE LENGTH(card_last4)=1;
 
 
 ----------------Remove certain characters from a string
-UPDATE xpxp.truevo_transactions
+UPDATE schema.transactions
 SET channel_name = REPLACE(channel_name, ' 3DS', '')
 WHERE channel_name LIKE '%3DS%';
 
@@ -165,7 +165,7 @@ SELECT REPLACE(channel_name, ' 3DS', '')
 FROM schema.transactions
 WHERE channel_name LIKE '% 3DS%';
 
--------------------------- Creat table and insert more than 1 row with one query
+-------------------------- Creat table and insert more than 1 row with single query
 DROP TABLE schema.table;
 
 CREATE TABLE schema.table
@@ -178,7 +178,7 @@ CREATE TABLE schema.table
 	updated_at timestamp NOT NULL DEFAULT NOW()
 );
 
-INSERT INTO xpxp.keto_marketing
+INSERT INTO schema.table
 	SELECT 11,date('07-01-2014'),560 UNION
 	SELECT 12,date('2014-08-01'),4708 UNION
 	SELECT 13,date('09-01-2014'),5960 UNION
@@ -191,4 +191,19 @@ INSERT INTO xpxp.keto_marketing
 	SELECT 20,date('04-01-2015'),4610.13
 ;
 
+-------------------Insert more than 1 row with timastamp format with single query 
+DROP TABLE schema.table;
 
+CREATE TABLE schema.table 
+(
+	alert_id int PRIMARY KEY NOT NULL,
+	trans_date TIMESTAMP,
+	email varchar(255),
+	masked_card varchar(255)
+);
+
+INSERT INTO schema.table
+SELECT 3, CAST('2002-12-02 18:15:12' AS timestamp), 'qwertyu0112@gmail.com', '991199XXX7777' 
+UNION
+SELECT 5, CAST('2002-12-02 18:07:51' AS timestamp), 'qwer112@gmail.com', '888888XXX7777'
+;
