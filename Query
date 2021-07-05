@@ -62,8 +62,8 @@ REVOKE USAGE ON SCHEMA test FROM test_user;
 GRANT SELECT, INSERT, UPDATE ON test.table TO test_user;
 REVOKE SELECT, INSERT, UPDATE ON test.table FROM test_user;
 
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA xpxp TO tableau_report;
-REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA xpxp FROM tableau_report;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA test TO test_user;
+REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA test FROM test_user;
 
 ------------------------------------------------------------Check tabels size in VERTICA
 
