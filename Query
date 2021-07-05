@@ -55,6 +55,16 @@ GROUP BY HOUR(date_created), FLOOR(MINUTE (date_created)/30)
 ORDER BY MIN(date_created)
 ;
 
+------------------------------------------------------------GRANT REVOKE Commands
+GRANT USAGE ON SCHEMA test TO test_user;
+REVOKE USAGE ON SCHEMA test FROM test_user;
+
+GRANT SELECT, INSERT, UPDATE ON test.table TO test_user;
+REVOKE SELECT, INSERT, UPDATE ON test.table FROM test_user;
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA xpxp TO tableau_report;
+REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA xpxp FROM tableau_report;
+
 ------------------------------------------------------------Check tabels size in VERTICA
 
 SELECT anchor_table_schema,
