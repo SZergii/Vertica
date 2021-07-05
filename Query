@@ -1,0 +1,219 @@
+------------------------------------------------------------GET "UNIX Time" in different databases
+
+Vertica:
+SELECT now() "Now", EXTRACT(EPOCH FROM now()) "UNIX Time";
+SELECT TO_TIMESTAMP(1603206468);
+
+MySQL:
+SELECT now() "Now", UNIX_TIMESTAMP(now()) "UNIX Time";
+SELECT FROM_UNIXTIME(1546662773.804000);
+
+SQL Server:
+SELECT GETDATE() "Now", DATEDIFF(s, '1970-01-01 00:00:00', GETUTCDATE()) "UNIX Time";
+
+Oracle:
+SELECT sysdate "Now", (sysdate - to_date( '01/01/1970', 'MM/DD/YYYY' )) * 24 * 60 * 60 "UNIX Time" 2 FROM dual;
+
+
+
+------------------------------------------------------------CONVERT "UNIX Time" to timestamp and the other way around
+
+SELECT CAST('2020-08-01 12:24:07' AS date) AS "Date", EXTRACT(EPOCH FROM CAST('2020-08-01 12:24:07' AS date)) "UNIX Date";
+SELECT CAST('2020-08-01 12:24:07' AS timestamp) AS "Date", EXTRACT(EPOCH FROM CAST('2020-08-01 12:24:07' AS timestamp)) "UNIX Date";
+SELECT TO_TIMESTAMP(1603206468);
+
+
+------------------------------------------------------------DATE_TRUNC ('year'/'quarter'/'month'/'day'/'hour'/'minute'/'second'= 'xxxx+s')
+
+SELECT DATE_TRUNC('day', date_created), COUNT(id)
+FROM schema.table
+WHERE date_created BETWEEN '2019-09-01 00:00:00' AND '2019-09-25 00:00:00'
+GROUP BY DATE_TRUNC('day', date_created)
+ORDER BY DATE_TRUNC('day', date_created) DESC
+;
+
+SELECT DATE_TRUNC('month', date_created), COUNT(id)
+FROM schema.table
+WHERE date_created BETWEEN NOW() - INTERVAL '40 days' AND NOW()
+GROUP BY 1
+ORDER BY 1 DESC
+;
+
+----parse date to custome period (24h to 4h periods, hour to 30 minetes period)
+
+SELECT MIN(date_created) AS time, COUNT(id) AS total
+FROM schema.table
+WHERE date_created BETWEEN '2021-01-27 00:00:00' AND '2021-01-28 23:59:59'
+GROUP BY DATE(date_created), FLOOR(HOUR(date_created)/4)
+ORDER BY MIN(date_created)
+;
+
+SELECT MIN(date_created) AS time, COUNT(id) AS total
+FROM schema.table
+WHERE date_created BETWEEN '2021-01-27 00:00:00' AND '2021-01-28 23:59:59'
+GROUP BY HOUR(date_created), FLOOR(MINUTE (date_created)/30)
+ORDER BY MIN(date_created)
+;
+
+------------------------------------------------------------GRANT REVOKE Commands
+GRANT USAGE ON SCHEMA test TO test_user;
+REVOKE USAGE ON SCHEMA test FROM test_user;
+
+GRANT SELECT, INSERT, UPDATE ON test.table TO test_user;
+REVOKE SELECT, INSERT, UPDATE ON test.table FROM test_user;
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA test TO test_user;
+REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA test FROM test_user;
+
+------------------------------------------------------------Check tabels size in VERTICA
+
+SELECT anchor_table_schema,
+		anchor_table_name,
+		SUM(used_bytes)/(1024^2) AS TABLE_SIZE_MB
+FROM v_monitor.column_storage
+GROUP BY anchor_table_schema, anchor_table_name
+ORDER BY SUM(used_bytes) DESC
+;
+
+--------------------------------------------------------How to select domain name from email address
+
+SELECT email, split_part(email, '@', 2) AS domain
+FROM user_email
+;
+
+SELECT RIGHT(email, LENGTH(email)-INSTR(email, '@'))
+FROM user_email
+;
+
+------------------------------------------------------TEMPORARY TABLE in VERTICA
+
+SELECT DISTINCT table_name, table_type FROM all_tables
+WHERE table_type LIKE 'LOCAL%'
+;
+
+CREATE LOCAL TEMPORARY TABLE checker (card_bin int, card_last4 int, transaction_date date,amount float) ON COMMIT PRESERVE ROWS
+;
+
+CREATE LOCAL TEMPORARY TABLE DOMAINS_FLAG (domain_name VARCHAR, pub_ats_id INT) on commit preserve rows
+;
+
+INSERT INTO DOMAINS_FLAG (domain_name, pub_ats_id)
+VALUES ('vs.com', 123555)
+;
+
+DROP TABLE checker;
+
+------------------------------------------------------Insert a value that contains an apostrophe (single quote)
+
+INSERT INTO Person (First, Last)
+VALUES ('Joe', 'O''Brien')
+;
+
+INSERT INTO Person (First, Last)
+VALUES ('Joe', E'O\'Brien')
+;
+
+SELECT First, Last FROM Person WHERE Last = 'O''Brien'
+;
+
+https://stackoverflow.com/questions/1912095/how-to-insert-a-value-that-contains-an-apostrophe-single-quote
+
+
+
+--------------------------------------------------------------Regular Expression Functions--------------------------------------------
+
+--Select all of the rows in the table that start with digit
+SELECT screen_resolution
+FROM landing
+WHERE REGEXP_LIKE(screen_resolution, '^[0-9]')
+;
+
+--Select all of the rows in the table that contain a digit.
+SELECT screen_resolution
+FROM landing
+WHERE REGEXP_LIKE(screen_resolution, '\d')
+;
+
+--Select all rows that contain the substring 'AB' using case sensitive matching.
+SELECT user_name 
+FROM user
+WHERE REGEXP_LIKE(user_name, 'AB')
+;
+
+--Select all rows that contain the substring 'AB' using case insensitive matching.
+SELECT user_name 
+FROM user
+WHERE REGEXP_LIKE(user_name, 'AB','i')
+;
+
+--Select rows that contain the substring 'A B' ignoring space within the regular expression.
+SELECT user_name 
+FROM user
+WHERE REGEXP_LIKE(user_name, 'A B', 'x')
+
+--Select rows that start with the substring 'ap' and end with the substring 'les'.
+SELECT user_name 
+FROM user
+WHERE REGEXP_LIKE(user_name, '^ap.*les$')
+;
+
+
+
+------------------Update card_last4 if missed one or more nulls before number
+UPDATE schema.transactions
+SET card_last4 = CONCAT('000', card_last4)
+WHERE LENGTH(card_last4)=1;
+
+
+
+----------------Remove certain characters from a string
+UPDATE schema.transactions
+SET channel_name = REPLACE(channel_name, ' 3DS', '')
+WHERE channel_name LIKE '%3DS%';
+
+SELECT REPLACE(channel_name, ' 3DS', '')
+FROM schema.transactions
+WHERE channel_name LIKE '% 3DS%';
+
+-------------------------- Creat table and insert more than 1 row with single query
+DROP TABLE schema.table;
+
+CREATE TABLE schema.table
+(
+	id int PRIMARY KEY NOT NULL,
+	date_of_spending date NOT NULL,
+	amount float,
+	created_agent_name varchar(100) DEFAULT CURRENT_USER(),
+	created_at timestamp NOT NULL DEFAULT NOW(),
+	updated_at timestamp NOT NULL DEFAULT NOW()
+);
+
+INSERT INTO schema.table
+	SELECT 11,date('07-01-2014'),560 UNION
+	SELECT 12,date('2014-08-01'),4708 UNION
+	SELECT 13,date('09-01-2014'),5960 UNION
+	SELECT 14,date('10-01-2014'),100 UNION
+	SELECT 15,date('11-01-2014'),20 UNION
+	SELECT 16,date('12-01-2014'),3180 UNION 
+	SELECT 17,date('01-01-2015'),480.01 UNION
+	SELECT 18,date('02-01-2015'),7320.05 UNION
+	SELECT 19,date('03-01-2015'),9030.02 UNION
+	SELECT 20,date('04-01-2015'),4610.13
+;
+
+-------------------Insert more than 1 row with timastamp format with single query 
+DROP TABLE schema.table;
+
+CREATE TABLE schema.table 
+(
+	alert_id int PRIMARY KEY NOT NULL,
+	trans_date TIMESTAMP,
+	email varchar(255),
+	masked_card varchar(255)
+);
+
+INSERT INTO schema.table
+SELECT 3, CAST('2002-12-02 18:15:12' AS timestamp), 'qwertyu0112@gmail.com', '991199XXX7777' 
+UNION
+SELECT 5, CAST('2002-12-02 18:07:51' AS timestamp), 'qwer112@gmail.com', '888888XXX7777'
+;
