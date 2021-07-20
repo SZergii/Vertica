@@ -217,3 +217,7 @@ SELECT 3, CAST('2002-12-02 18:15:12' AS timestamp), 'qwertyu0112@gmail.com', '99
 UNION
 SELECT 5, CAST('2002-12-02 18:07:51' AS timestamp), 'qwer112@gmail.com', '888888XXX7777'
 ;
+
+----------------------View Privileges
+SELECT grantor, privileges_description, object_schema, object_name, grantee 
+FROM grants
