@@ -221,3 +221,13 @@ SELECT 5, CAST('2002-12-02 18:07:51' AS timestamp), 'qwer112@gmail.com', '888888
 ----------------------View Privileges
 SELECT grantor, privileges_description, object_schema, object_name, grantee 
 FROM grants
+
+
+
+-------------------------How to insert a value that contains an apostrophe (single quote)
+https://stackoverflow.com/questions/1912095/how-to-insert-a-value-that-contains-an-apostrophe-single-quote
+
+insert into Person (First, Last)
+values ('Joe', 'O''Brien')
+
+insert into Person (First, Last) values (q'[Joe]', q'[O'Brien]')
