@@ -231,3 +231,13 @@ insert into Person (First, Last)
 values ('Joe', 'O''Brien')
 
 insert into Person (First, Last) values (q'[Joe]', q'[O'Brien]')
+
+
+
+---------------------grants
+
+SELECT grantor, privileges_description, object_schema, object_name, grantee 
+FROM grants
+WHERE object_schema='shema'
+AND object_name LIKE '%table%'
+;
